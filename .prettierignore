@@ -1,0 +1,23 @@
+# Node.js build and dependencies
+node_modules
+dist
+build
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.sample
+.env.*.local
+
+# Git
+.gitignore
+
+# Prettier config itself
+.prettierignore
+
+# Package lock files 
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
