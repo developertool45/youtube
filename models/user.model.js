@@ -1,63 +1,66 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import { jwt } from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
-	{
-		username: {
-			type: String,
-			required: true,
-			trim: true, 
-			unique: true,
-			lowercase: true,
-			index:true
-		},
-		email: {
-			type: String,
-			required: true,
-			trim: true, 
-			unique: true,
-			lowercase: true,
-		},
-		fullname: {
-			type: String,
-			required: true,
-			trim: true,		
-			index: true,
-		},
-		avatar: {
-			type: String, // claudinary url
-			required:true,
-		},
-		coverImage: {
-			type: String,		
-		},
-		watchHistory: [
-			{
-				Types: Schema.Types.ObjectId,
-				ref:"Video"
-			}
-		],
-		password: {
-			type: String,
-			required: [true, "password is required!"]
-		},
-		refreshToken: {
-			type: String,
-			required:true
-		}
-	},
-	{
-		timestamps: true
-	}
-)
+  {
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+      lowercase: true,
+      index: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+      lowercase: true,
+    },
+    fullname: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
+    avatar: {
+      type: String, // claudinary url
+      required: true,
+    },
+    coverImage: {
+      type: String,
+    },
+    watchHistory: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Video",
+      },
+    ],
+    password: {
+      type: String,
+      required: [true, "password is required!"],
+    },
+    refreshToken: {
+      type: String,
+    },
+    refreshtokenexpiry: {
+      type: Date,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-userSchema.pre("save", async function(next){
-	if (!this.ismodified("password")) return next();// if no modifies in password return 
+userSchema.pre("save", async function (next) {
+  // if no modifies in password then return
+  if (!this.isModified("password")) return next();
 
-	this.password = bcrypt.hash(this.password, 10)
-	next()
-})
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 userSchema.methods.isPasswordCorrect = async function (password) {
 	return await bcrypt.compare(password, this.password);
 }
